@@ -1,0 +1,176 @@
+openapi: 3.0.1
+info:
+  title: GTFS Wrocław API
+  description: API for General Transit Feed Specification data
+  version: "v1"
+servers:
+  - url: http://localhost:4002
+paths:
+  /current_time:
+    get:
+      operationId: getCurrentTime
+      summary: Get current time
+      description: Returns current time in HH:MM:SS format
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  time:
+                    type: string
+                    format: time
+  /routes:
+    get:
+      operationId: Get list of all routes
+      summary: Returns a list of routes
+      description: A list of routes with their corresponding types
+      responses:
+        "200":
+          description: A JSON array of routes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    route_id:
+                      type: string
+                      description: The ID of the route
+                    route_type2_id:
+                      type: integer
+                      description: The ID of the route type
+                    route_type2_name:
+                      type: string
+                      description: The name of the route type
+  /trips/{route_id}:
+    get:
+      operationId: getTrips
+      summary: Get all main variant trips for a specific route
+      parameters:
+        - name: route_id
+          in: path
+          required: true
+          description: ID of the route
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Trip"
+
+  /stop_times/{route_id}/{stop_id}:
+    get:
+      operationId: getStopTimes
+      summary: Get all stop times for a specific route and stop
+      parameters:
+        - name: route_id
+          in: path
+          required: true
+          description: ID of the route
+          schema:
+            type: string
+        - name: stop_id
+          in: path
+          required: true
+          description: ID of the stop
+          schema:
+            type: string
+        - name: time
+          in: query
+          required: true
+          description: Time from which to find next stop times. Format HH:MM:SS
+          schema:
+            type: string
+            format: time
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StopTime"
+
+  /stops/search/{name}:
+    get:
+      operationId: searchStops
+      summary: Search for stops by name
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Part of the stop name
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Stop"
+components:
+  schemas:
+    Trip:
+      type: object
+      properties:
+        route_id:
+          type: string
+        service_id:
+          type: string
+        trip_id:
+          type: string
+        trip_headsign:
+          type: string
+        direction_id:
+          type: integer
+        shape_id:
+          type: string
+        brigade_id:
+          type: string
+        vehicle_id:
+          type: string
+        variant_id:
+          type: string
+    StopTime:
+      type: object
+      properties:
+        trip_id:
+          type: string
+        arrival_time:
+          type: string
+        departure_time:
+          type: string
+        stop_id:
+          type: string
+        stop_sequence:
+          type: integer
+        pickup_type:
+          type: integer
+        drop_off_type:
+          type: integer
+    Stop:
+      type: object
+      properties:
+        stop_id:
+          type: string
+        stop_code:
+          type: string
+        stop_name:
+          type: string
+        stop_lat:
+          type: number
+        stop_lon:
+          type: number

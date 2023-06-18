@@ -1,0 +1,18 @@
+{
+    "schema_version": "v1",
+    "name_for_model": "transport",
+    "name_for_human": "GTFS Transport Plugin",
+    "description_for_model": "Plugin for quering GTFS transport data.",
+    "description_for_human": "Search public transport trips.",
+    "auth": {
+        "type": "none"
+    },
+    "api": {
+        "type": "openapi",
+        "url": "http://localhost:4002/openapi.yaml",
+        "is_user_authenticated": false
+    },
+    "logo_url": "http://localhost:4002/logo.png",
+    "contact_email": "contact@konradk.pl",
+    "legal_info_url": "https://openai-transport-plugin.ancymon.net"
+}
